@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StatCard from '../components/StatCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { link } from '../lib/link';
 
 const projects = await getCollection('projects');
 const foundations = await getCollection('foundations');
@@ -105,7 +106,7 @@ const categories = [...new Set(projects.map((p) => p.data.category))];
   <section class="mb-10">
     <div class="mb-4 flex items-center justify-between">
       <h2 class="text-xl font-bold text-white">🕐 最近学习</h2>
-      <a href="/projects" class="text-sm text-oss-primary hover:underline">查看全部 →</a>
+      <a href={link('/projects')} class="text-sm text-oss-primary hover:underline">查看全部 →</a>
     </div>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {
@@ -119,7 +120,7 @@ const categories = [...new Set(projects.map((p) => p.data.category))];
             born={p.data.born}
             stars={p.data.stars}
             depth={p.data.depth}
-            href={`/projects/${p.id}`}
+            href={link(`/projects/${p.id}`)}
           />
         ))
       }

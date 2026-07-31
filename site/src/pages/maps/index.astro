@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { topicMaps } from '../../data/topicmaps';
+import { link } from '../../lib/link';
 ---
 
 <BaseLayout title="专题图谱 · 开源宇宙">
@@ -16,7 +17,7 @@ import { topicMaps } from '../../data/topicmaps';
     {
       topicMaps.map((m) => (
         <a
-          href={`/maps/${m.slug}`}
+          href={link(`/maps/${m.slug}`)}
           class="group flex flex-col rounded-xl border border-oss-border bg-oss-surface p-5 transition-all hover:border-oss-primary hover:shadow-lg hover:shadow-oss-primary/10"
         >
           <div class="text-3xl">{m.icon}</div>

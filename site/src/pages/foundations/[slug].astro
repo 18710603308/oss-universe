@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { link } from '../../lib/link';
 
 export async function getStaticPaths() {
   const foundations = await getCollection('foundations');
@@ -20,7 +21,7 @@ const related = allProjects.filter((p) => p.data.foundation === d.name);
 ---
 
 <BaseLayout title={`${d.name} · 开源宇宙`} description={d.focus}>
-  <a href="/foundations" class="text-sm text-oss-primary hover:underline">← 返回基金会列表</a>
+  <a href={link('/foundations')} class="text-sm text-oss-primary hover:underline">← 返回基金会列表</a>
 
   <header class="mt-4 mb-6 rounded-xl border border-oss-border bg-oss-surface p-6">
     <h1 class="text-3xl font-bold text-white">{d.name}</h1>
@@ -44,7 +45,7 @@ const related = allProjects.filter((p) => p.data.foundation === d.name);
         <div class="flex flex-wrap gap-2">
           {related.map((p) => (
             <a
-              href={`/projects/${p.id}`}
+              href={link(`/projects/${p.id}`)}
               class="rounded-full border border-oss-border bg-oss-surface px-3 py-1 text-sm text-oss-primary hover:border-oss-primary"
             >
               {p.data.name}

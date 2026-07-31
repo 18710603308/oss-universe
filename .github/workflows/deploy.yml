@@ -43,10 +43,10 @@ jobs:
         run: npm ci
 
       - name: Build with Astro
-        # 若仓库名不是 <用户名>.github.io，请将 DEPLOY_BASE 设为 "/<仓库名>/"
-        # 例如仓库名为 oss-universe 时：DEPLOY_BASE: "/oss-universe/"
+        # 项目页部署：base 默认为 /oss-universe（与仓库名一致）。
+        # 若日后改仓库名或用自定义域名，可在 Actions Variables 里设 DEPLOY_BASE 覆盖。
         env:
-          DEPLOY_BASE: ${{ vars.DEPLOY_BASE || '/' }}
+          DEPLOY_BASE: ${{ vars.DEPLOY_BASE || '/oss-universe' }}
         run: npm run build
 
       - name: Upload artifact

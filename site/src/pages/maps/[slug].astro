@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { topicMaps } from '../../data/topicmaps';
+import { link } from '../../lib/link';
 
 export function getStaticPaths() {
   return topicMaps.map((m) => ({
@@ -44,7 +45,7 @@ const echartsNodes = map.nodes
       value: `${n.year} · ${n.desc ?? ''}`,
       category: n.group,
       symbolSize: n.projectId ? 38 : 26,
-      url: n.projectId ? `/projects/${n.projectId}` : undefined,
+      url: n.projectId ? link(`/projects/${n.projectId}`) : undefined,
       itemStyle: n.projectId ? { borderColor: '#58a6ff', borderWidth: 2 } : {},
     };
   });
@@ -75,7 +76,7 @@ const legendItems = Object.entries(relationColor);
 ---
 
 <BaseLayout title={`${map.title} · 专题图谱`} description={map.summary}>
-  <a href="/maps" class="text-sm text-oss-primary hover:underline">← 返回专题图谱</a>
+  <a href={link('/maps')} class="text-sm text-oss-primary hover:underline">← 返回专题图谱</a>
 
   <header class="mt-4 mb-4">
     <h1 class="text-3xl font-bold text-white">{map.icon} {map.title}</h1>

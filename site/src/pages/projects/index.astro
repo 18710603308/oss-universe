@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import { link } from '../../lib/link';
 
 const projects = await getCollection('projects');
 const sorted = projects.sort((a, b) => a.data.name.localeCompare(b.data.name));
@@ -52,7 +53,7 @@ const categories = [...new Set(projects.map((p) => p.data.category))].sort();
             born={p.data.born}
             stars={p.data.stars}
             depth={p.data.depth}
-            href={`/projects/${p.id}`}
+            href={link(`/projects/${p.id}`)}
           />
         </div>
       ))

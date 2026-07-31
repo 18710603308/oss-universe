@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { link } from '../../lib/link';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -23,7 +24,7 @@ const depthMap = {
 ---
 
 <BaseLayout title={`${d.name} · 开源宇宙`} description={d.tagline}>
-  <a href="/projects" class="text-sm text-oss-primary hover:underline">← 返回项目库</a>
+  <a href={link('/projects')} class="text-sm text-oss-primary hover:underline">← 返回项目库</a>
 
   <header class="mt-4 mb-6 rounded-xl border border-oss-border bg-oss-surface p-6">
     <div class="flex flex-wrap items-center gap-3">

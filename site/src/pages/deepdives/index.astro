@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { link } from '../../lib/link';
 
 const deepdives = (await getCollection('deepdives')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
@@ -19,7 +20,7 @@ const deepdives = (await getCollection('deepdives')).sort(
     {
       deepdives.map((d) => (
         <a
-          href={`/deepdives/${d.id}`}
+          href={link(`/deepdives/${d.id}`)}
           class="group block rounded-xl border border-oss-border bg-oss-surface p-5 transition-all hover:border-oss-primary"
         >
           <div class="flex flex-wrap items-center gap-2 text-xs text-oss-muted">

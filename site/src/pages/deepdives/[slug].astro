@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { link } from '../../lib/link';
 
 export async function getStaticPaths() {
   const deepdives = await getCollection('deepdives');
@@ -16,7 +17,7 @@ const d = entry.data;
 ---
 
 <BaseLayout title={`${d.title} · 开源宇宙`} description={d.summary}>
-  <a href="/deepdives" class="text-sm text-oss-primary hover:underline">← 返回深度剖析</a>
+  <a href={link('/deepdives')} class="text-sm text-oss-primary hover:underline">← 返回深度剖析</a>
 
   <header class="mt-4 mb-6">
     <div class="flex flex-wrap items-center gap-2 text-xs text-oss-muted">

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { link } from '../../lib/link';
 
 const foundations = await getCollection('foundations');
 const sorted = foundations.sort((a, b) => a.data.order - b.data.order);
@@ -18,7 +19,7 @@ const sorted = foundations.sort((a, b) => a.data.order - b.data.order);
     {
       sorted.map((f) => (
         <a
-          href={`/foundations/${f.id}`}
+          href={link(`/foundations/${f.id}`)}
           class="group rounded-xl border border-oss-border bg-oss-surface p-5 transition-all hover:border-oss-primary"
         >
           <div class="flex items-center justify-between">
