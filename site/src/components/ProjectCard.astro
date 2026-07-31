@@ -1,0 +1,46 @@
+---
+interface Props {
+  name: string;
+  tagline: string;
+  category: string;
+  foundation?: string;
+  language?: string;
+  born?: number;
+  stars?: string;
+  depth: 'seed' | 'sprout' | 'tree' | 'peak';
+  href: string;
+}
+
+const { name, tagline, category, foundation, language, born, stars, depth, href } =
+  Astro.props;
+
+const depthMap = {
+  seed: { label: '🌱 了解', color: 'text-gray-400 border-gray-600' },
+  sprout: { label: '🌿 上手', color: 'text-lime-400 border-lime-700' },
+  tree: { label: '🌳 深研', color: 'text-green-400 border-green-600' },
+  peak: { label: '🏔️ 贡献过', color: 'text-blue-400 border-blue-600' },
+};
+const d = depthMap[depth];
+---
+
+<a
+  href={href}
+  class="group flex flex-col rounded-xl border border-oss-border bg-oss-surface p-4 transition-all hover:border-oss-primary hover:shadow-lg hover:shadow-oss-primary/10"
+>
+  <div class="flex items-start justify-between gap-2">
+    <h3 class="font-bold text-white group-hover:text-oss-primary">{name}</h3>
+    <span class={`shrink-0 rounded-full border px-2 py-0.5 text-xs ${d.color}`}>
+      {d.label}
+    </span>
+  </div>
+  <p class="mt-1.5 text-sm text-oss-muted line-clamp-2">{tagline}</p>
+  <div class="mt-3 flex flex-wrap gap-1.5 text-xs">
+    <span class="rounded bg-oss-bg px-2 py-0.5 text-oss-primary">{category}</span>
+    {language && <span class="rounded bg-oss-bg px-2 py-0.5 text-oss-muted">{language}</span>}
+    {foundation && <span class="rounded bg-oss-bg px-2 py-0.5 text-oss-muted">{foundation}</span>}
+  </div>
+  <div class="mt-3 flex items-center gap-3 text-xs text-oss-muted">
+    {born && <span>📅 {born}</span>}
+    {stars && <span>⭐ {stars}</span>}
+  </div>
+</a>

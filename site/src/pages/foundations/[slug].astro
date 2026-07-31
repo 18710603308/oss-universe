@@ -1,0 +1,57 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const foundations = await getCollection('foundations');
+  return foundations.map((foundation) => ({
+    params: { slug: foundation.id },
+    props: { foundation },
+  }));
+}
+
+const { foundation } = Astro.props;
+const { Content } = await render(foundation);
+const d = foundation.data;
+
+// 关联该基金会的项目
+const allProjects = await getCollection('projects');
+const related = allProjects.filter((p) => p.data.foundation === d.name);
+---
+
+<BaseLayout title={`${d.name} · 开源宇宙`} description={d.focus}>
+  <a href="/foundations" class="text-sm text-oss-primary hover:underline">← 返回基金会列表</a>
+
+  <header class="mt-4 mb-6 rounded-xl border border-oss-border bg-oss-surface p-6">
+    <h1 class="text-3xl font-bold text-white">{d.name}</h1>
+    {d.fullName && <p class="mt-1 text-oss-muted">{d.fullName}</p>}
+    <div class="mt-4 flex flex-wrap gap-2 text-xs">
+      {d.founded && <span class="rounded bg-oss-bg px-2 py-1 text-oss-muted">📅 成立 {d.founded}</span>}
+      {d.projectCount && <span class="rounded bg-oss-bg px-2 py-1 text-oss-muted">📦 {d.projectCount} 项目</span>}
+      {d.license && <span class="rounded bg-oss-bg px-2 py-1 text-oss-muted">⚖️ {d.license}</span>}
+    </div>
+    <p class="mt-3 text-sm text-oss-primary">{d.focus}</p>
+  </header>
+
+  <article class="prose-oss">
+    <Content />
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="mt-8">
+        <h2 class="mb-3 text-xl font-bold text-white">📦 本站已收录的该基金会项目</h2>
+        <div class="flex flex-wrap gap-2">
+          {related.map((p) => (
+            <a
+              href={`/projects/${p.id}`}
+              class="rounded-full border border-oss-border bg-oss-surface px-3 py-1 text-sm text-oss-primary hover:border-oss-primary"
+            >
+              {p.data.name}
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

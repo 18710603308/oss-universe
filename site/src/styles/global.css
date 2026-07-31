@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-oss-bg: #0d1117;
+  --color-oss-surface: #161b22;
+  --color-oss-border: #30363d;
+  --color-oss-primary: #58a6ff;
+  --color-oss-accent: #3fb950;
+  --color-oss-text: #e6edf3;
+  --color-oss-muted: #8b949e;
+  --font-sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-oss-bg);
+  color: var(--color-oss-text);
+  font-family: var(--font-sans);
+}
+
+/* 文章正文排版 */
+.prose-oss {
+  line-height: 1.8;
+}
+.prose-oss h1,
+.prose-oss h2,
+.prose-oss h3 {
+  color: #fff;
+  font-weight: 700;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  line-height: 1.3;
+}
+.prose-oss h1 { font-size: 1.9rem; }
+.prose-oss h2 {
+  font-size: 1.45rem;
+  border-bottom: 1px solid var(--color-oss-border);
+  padding-bottom: 0.3em;
+}
+.prose-oss h3 { font-size: 1.2rem; }
+.prose-oss p { margin: 0.9em 0; }
+.prose-oss a { color: var(--color-oss-primary); text-decoration: underline; }
+.prose-oss ul,
+.prose-oss ol { margin: 0.9em 0; padding-left: 1.5em; }
+.prose-oss li { margin: 0.35em 0; }
+.prose-oss ul { list-style: disc; }
+.prose-oss ol { list-style: decimal; }
+.prose-oss code {
+  background: var(--color-oss-surface);
+  border: 1px solid var(--color-oss-border);
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+  font-size: 0.9em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.prose-oss pre {
+  background: #010409 !important;
+  border: 1px solid var(--color-oss-border);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1.2em 0;
+}
+.prose-oss pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.prose-oss blockquote {
+  border-left: 3px solid var(--color-oss-primary);
+  padding-left: 1em;
+  color: var(--color-oss-muted);
+  margin: 1em 0;
+}
+.prose-oss table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.92rem;
+}
+.prose-oss th,
+.prose-oss td {
+  border: 1px solid var(--color-oss-border);
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+.prose-oss th {
+  background: var(--color-oss-surface);
+  font-weight: 600;
+}

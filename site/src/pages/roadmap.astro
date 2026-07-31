@@ -1,0 +1,53 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const stages = (await getCollection('roadmap')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const rendered = await Promise.all(
+  stages.map(async (s) => ({ data: s.data, Content: (await render(s)).Content }))
+);
+
+const statusMap = {
+  done: { label: '✅ 已完成', color: 'text-oss-accent border-oss-accent' },
+  active: { label: '🔥 进行中', color: 'text-oss-primary border-oss-primary' },
+  todo: { label: '⏳ 待开始', color: 'text-oss-muted border-oss-border' },
+};
+---
+
+<BaseLayout title="学习路线 · 开源宇宙">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-white">🛤️ 3 年学习路线</h1>
+    <p class="mt-2 text-oss-muted">
+      广度构建 → 深度突破 → 生态贯通。严格线性递进，前序是后序的基础。
+    </p>
+  </header>
+
+  <div class="space-y-6">
+    {
+      rendered.map((s, i) => {
+        const st = statusMap[s.data.status];
+        return (
+          <div class="relative rounded-xl border border-oss-border bg-oss-surface p-6">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full bg-oss-primary/20 text-sm font-bold text-oss-primary">
+                {i + 1}
+              </span>
+              <span class="text-sm text-oss-muted">{s.data.stage}</span>
+              <h2 class="text-xl font-bold text-white">{s.data.title}</h2>
+              <span class={`ml-auto rounded-full border px-3 py-1 text-xs ${st.color}`}>
+                {st.label}
+              </span>
+            </div>
+            <p class="mt-3 text-sm text-oss-accent">🎯 {s.data.goal}</p>
+            <div class="prose-oss mt-4 border-t border-oss-border pt-4">
+              <s.Content />
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</BaseLayout>

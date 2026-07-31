@@ -1,0 +1,142 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StatCard from '../components/StatCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const projects = await getCollection('projects');
+const foundations = await getCollection('foundations');
+const deepdives = await getCollection('deepdives');
+
+// 学习深度统计
+const depthCount = {
+  seed: projects.filter((p) => p.data.depth === 'seed').length,
+  sprout: projects.filter((p) => p.data.depth === 'sprout').length,
+  tree: projects.filter((p) => p.data.depth === 'tree').length,
+  peak: projects.filter((p) => p.data.depth === 'peak').length,
+};
+
+// 目标常量（来自规划大纲）
+const GOAL_CARDS = 500;
+const GOAL_DEEPDIVES = 36;
+const GOAL_FOUNDATIONS = 12;
+
+const cardProgress = Math.round((projects.length / GOAL_CARDS) * 100);
+
+// 最近更新的项目
+const recent = [...projects]
+  .sort(
+    (a, b) =>
+      (b.data.updated?.getTime() ?? 0) - (a.data.updated?.getTime() ?? 0)
+  )
+  .slice(0, 6);
+
+// 按领域统计
+const categories = [...new Set(projects.map((p) => p.data.category))];
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="mb-10 text-center">
+    <h1 class="text-4xl font-bold text-white sm:text-5xl">
+      🌌 开源宇宙
+    </h1>
+    <p class="mx-auto mt-4 max-w-2xl text-lg text-oss-muted">
+      一个为期 3 年的开源产品深度学习系统。以建促学，公开学习 —
+      让每一个基金会、每一个顶级项目，都留下我亲手写下的深度笔记。
+    </p>
+  </section>
+
+  <!-- 核心指标 -->
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-bold text-white">📊 学习进度</h2>
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <StatCard
+        icon="🗂️"
+        label="项目卡片"
+        value={`${projects.length}/${GOAL_CARDS}`}
+        sub={`总进度 ${cardProgress}%`}
+      />
+      <StatCard
+        icon="🔬"
+        label="深度剖析"
+        value={`${deepdives.length}/${GOAL_DEEPDIVES}`}
+        sub="每月 1 篇旗舰"
+      />
+      <StatCard
+        icon="🏛️"
+        label="基金会百科"
+        value={`${foundations.length}/${GOAL_FOUNDATIONS}`}
+        sub="生态全覆盖"
+      />
+      <StatCard
+        icon="🌳"
+        label="深研项目"
+        value={depthCount.tree + depthCount.peak}
+        sub="北极星指标"
+      />
+    </div>
+  </section>
+
+  <!-- 学习深度分布 -->
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-bold text-white">🌱 学习深度分布</h2>
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div class="rounded-xl border border-oss-border bg-oss-surface p-4 text-center">
+        <div class="text-2xl font-bold text-gray-400">{depthCount.seed}</div>
+        <div class="mt-1 text-sm text-oss-muted">🌱 了解</div>
+      </div>
+      <div class="rounded-xl border border-oss-border bg-oss-surface p-4 text-center">
+        <div class="text-2xl font-bold text-lime-400">{depthCount.sprout}</div>
+        <div class="mt-1 text-sm text-oss-muted">🌿 上手</div>
+      </div>
+      <div class="rounded-xl border border-oss-border bg-oss-surface p-4 text-center">
+        <div class="text-2xl font-bold text-green-400">{depthCount.tree}</div>
+        <div class="mt-1 text-sm text-oss-muted">🌳 深研</div>
+      </div>
+      <div class="rounded-xl border border-oss-border bg-oss-surface p-4 text-center">
+        <div class="text-2xl font-bold text-blue-400">{depthCount.peak}</div>
+        <div class="mt-1 text-sm text-oss-muted">🏔️ 贡献过</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 最近学习 -->
+  <section class="mb-10">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-xl font-bold text-white">🕐 最近学习</h2>
+      <a href="/projects" class="text-sm text-oss-primary hover:underline">查看全部 →</a>
+    </div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        recent.map((p) => (
+          <ProjectCard
+            name={p.data.name}
+            tagline={p.data.tagline}
+            category={p.data.category}
+            foundation={p.data.foundation}
+            language={p.data.language}
+            born={p.data.born}
+            stars={p.data.stars}
+            depth={p.data.depth}
+            href={`/projects/${p.id}`}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 领域覆盖 -->
+  <section>
+    <h2 class="mb-4 text-xl font-bold text-white">🏷️ 已覆盖领域</h2>
+    <div class="flex flex-wrap gap-2">
+      {
+        categories.map((c) => (
+          <span class="rounded-full border border-oss-border bg-oss-surface px-3 py-1 text-sm text-oss-muted">
+            {c}
+          </span>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

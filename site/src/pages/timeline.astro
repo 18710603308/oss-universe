@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// 开源大事记（从进化史文档提炼的关键节点）
+const events = [
+  { year: 1985, title: 'FSF 成立', desc: 'Richard Stallman 创立自由软件基金会，开启自由软件运动', cat: '基金会' },
+  { year: 1991, title: 'Linux 内核诞生', desc: 'Linus Torvalds 发布 Linux 0.01', cat: '操作系统' },
+  { year: 1995, title: 'Apache HTTP Server', desc: 'Web 服务器鼻祖诞生', cat: 'Web' },
+  { year: 1996, title: 'PostgreSQL', desc: '从 Berkeley POSTGRES 演进而来', cat: '数据库' },
+  { year: 1998, title: 'Mozilla / 开源运动', desc: 'Netscape 开源，"Open Source" 术语诞生', cat: '基金会' },
+  { year: 1999, title: 'Apache 基金会成立', desc: '开源治理的里程碑', cat: '基金会' },
+  { year: 2004, title: 'Git 前夜 / Rails', desc: 'Ruby on Rails 开创 Web 框架黄金时代', cat: '后端' },
+  { year: 2005, title: 'Git 诞生', desc: 'Linus 两周写出分布式版本控制系统', cat: '工具' },
+  { year: 2006, title: 'Hadoop', desc: '大数据时代开启（MapReduce + HDFS）', cat: '大数据' },
+  { year: 2008, title: 'GitHub 上线', desc: 'Git 托管平台，开源协作进入新纪元', cat: '平台' },
+  { year: 2009, title: 'Node.js / Redis / Go', desc: 'JS 后端、内存数据库、Go 语言集中登场', cat: '语言' },
+  { year: 2010, title: 'Rust 诞生', desc: 'Mozilla 启动内存安全系统语言', cat: '语言' },
+  { year: 2011, title: 'Kafka / Bootstrap', desc: '事件流平台与 CSS 框架', cat: '大数据' },
+  { year: 2012, title: 'TypeScript', desc: '微软为 JS 带来类型系统', cat: '语言' },
+  { year: 2013, title: 'Docker 诞生', desc: '容器化革命开始', cat: '云原生' },
+  { year: 2013, title: 'React', desc: 'Facebook 掀起前端组件化革命', cat: '前端' },
+  { year: 2014, title: 'Kubernetes / Vue', desc: '容器编排标准与渐进式前端框架', cat: '云原生' },
+  { year: 2015, title: 'CNCF 成立 / TensorFlow', desc: '云原生基金会与深度学习开源潮', cat: '基金会' },
+  { year: 2016, title: 'PyTorch', desc: '动态图深度学习框架', cat: 'AI' },
+  { year: 2018, title: '微软收购 GitHub', desc: '75 亿美元，开源与商业深度融合', cat: '平台' },
+  { year: 2019, title: 'GitHub Actions', desc: 'CI/CD 内置，开发流程一体化', cat: '平台' },
+  { year: 2020, title: 'Vite / Serverless 兴起', desc: '前端构建提速，云原生深化', cat: '前端' },
+  { year: 2022, title: 'Stable Diffusion / Copilot', desc: 'AI 生成与 AI 编程进入主流', cat: 'AI' },
+  { year: 2023, title: 'LLaMA / Ollama', desc: '开源大模型爆发，本地 LLM 普及', cat: 'AI' },
+  { year: 2024, title: 'OpenTofu / Valkey', desc: '开源分支潮：协议变更催生社区分叉', cat: '基金会' },
+];
+
+const cats = [...new Set(events.map((e) => e.cat))];
+---
+
+<BaseLayout title="编年史 · 开源宇宙">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-white">📜 开源技术编年史</h1>
+    <p class="mt-2 text-oss-muted">
+      从 1985 年 FSF 成立至今，开源世界的关键节点。共 {events.length} 个里程碑。
+    </p>
+  </header>
+
+  <!-- 分类图例 -->
+  <div class="mb-8 flex flex-wrap gap-2">
+    {
+      cats.map((c) => (
+        <span class="rounded-full border border-oss-border bg-oss-surface px-3 py-1 text-xs text-oss-muted">
+          {c}
+        </span>
+      ))
+    }
+  </div>
+
+  <!-- 时间轴 -->
+  <div class="relative border-l-2 border-oss-border pl-8">
+    {
+      events.map((e) => (
+        <div class="relative mb-8">
+          <span class="absolute -left-[41px] flex h-5 w-5 items-center justify-center rounded-full border-2 border-oss-primary bg-oss-bg">
+            <span class="h-2 w-2 rounded-full bg-oss-primary" />
+          </span>
+          <div class="rounded-xl border border-oss-border bg-oss-surface p-4 transition-colors hover:border-oss-primary">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="text-lg font-bold text-oss-primary">{e.year}</span>
+              <h3 class="font-bold text-white">{e.title}</h3>
+              <span class="ml-auto rounded bg-oss-bg px-2 py-0.5 text-xs text-oss-muted">
+                {e.cat}
+              </span>
+            </div>
+            <p class="mt-1.5 text-sm text-oss-muted">{e.desc}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</BaseLayout>

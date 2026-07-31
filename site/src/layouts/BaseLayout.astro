@@ -1,0 +1,37 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = '开源宇宙 OSS Universe',
+  description = '一个为期 3 年的开源产品深度学习系统 — 知识库 · 学习系统 · 作品集',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen">
+    <Nav />
+    <main class="mx-auto max-w-6xl px-4 py-8">
+      <slot />
+    </main>
+    <footer
+      class="mt-16 border-t border-oss-border py-8 text-center text-sm text-oss-muted"
+    >
+      <p>开源宇宙 OSS Universe · 以建促学，公开学习</p>
+      <p class="mt-1">Built with Astro + Tailwind · 2026</p>
+    </footer>
+  </body>
+</html>

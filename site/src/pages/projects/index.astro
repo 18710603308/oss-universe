@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = await getCollection('projects');
+const sorted = projects.sort((a, b) => a.data.name.localeCompare(b.data.name));
+
+const categories = [...new Set(projects.map((p) => p.data.category))].sort();
+---
+
+<BaseLayout title="项目库 · 开源宇宙">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-white">🗂️ 项目库</h1>
+    <p class="mt-2 text-oss-muted">
+      共 {projects.length} 个项目卡片 · 网站的原子知识单元。点击卡片查看深度笔记。
+    </p>
+  </header>
+
+  <!-- 领域筛选（纯前端 JS 过滤） -->
+  <div class="mb-6 flex flex-wrap gap-2" id="filters">
+    <button
+      data-cat="all"
+      class="filter-btn rounded-full border border-oss-primary bg-oss-primary/10 px-3 py-1 text-sm text-oss-primary"
+      >全部</button
+    >
+    {
+      categories.map((c) => (
+        <button
+          data-cat={c}
+          class="filter-btn rounded-full border border-oss-border px-3 py-1 text-sm text-oss-muted hover:border-oss-primary"
+        >
+          {c}
+        </button>
+      ))
+    }
+  </div>
+
+  <div
+    id="grid"
+    class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+  >
+    {
+      sorted.map((p) => (
+        <div class="project-item" data-cat={p.data.category}>
+          <ProjectCard
+            name={p.data.name}
+            tagline={p.data.tagline}
+            category={p.data.category}
+            foundation={p.data.foundation}
+            language={p.data.language}
+            born={p.data.born}
+            stars={p.data.stars}
+            depth={p.data.depth}
+            href={`/projects/${p.id}`}
+          />
+        </div>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('.project-item');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+
+      // 更新按钮样式
+      buttons.forEach((b) => {
+        b.classList.remove('border-oss-primary', 'bg-oss-primary/10', 'text-oss-primary');
+        b.classList.add('border-oss-border', 'text-oss-muted');
+      });
+      btn.classList.add('border-oss-primary', 'bg-oss-primary/10', 'text-oss-primary');
+      btn.classList.remove('border-oss-border', 'text-oss-muted');
+
+      // 过滤卡片
+      items.forEach((item) => {
+        item.style.display =
+          cat === 'all' || item.dataset.cat === cat ? '' : 'none';
+      });
+    });
+  });
+</script>
