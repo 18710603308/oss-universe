@@ -123,7 +123,7 @@ export const topicMaps: TopicMap[] = [
       { id: 'pytorch', name: 'PyTorch', year: 2016, group: '深度学习框架', desc: '研究首选，动态图', projectId: 'pytorch' },
       { id: 'transformers', name: 'Transformers', year: 2018, group: '理论/模型', desc: 'HF 模型库', projectId: 'transformers' },
       { id: 'llama', name: 'LLaMA', year: 2023, group: '理论/模型', desc: 'Meta 开源大模型', projectId: 'llama' },
-      { id: 'llamacpp', name: 'llama.cpp', year: 2023, group: '推理与运行', desc: 'C++ 本地推理' },
+      { id: 'llamacpp', name: 'llama.cpp', year: 2023, group: '推理与运行', desc: 'C++ 本地推理', projectId: 'llamacpp' },
       { id: 'ollama', name: 'Ollama', year: 2023, group: '推理与运行', desc: '一键本地跑 LLM', projectId: 'ollama' },
       { id: 'vllm', name: 'vLLM', year: 2023, group: '推理与运行', desc: '高吞吐推理引擎', projectId: 'vllm' },
       { id: 'langchain', name: 'LangChain', year: 2022, group: '应用框架', desc: 'LLM 应用框架', projectId: 'langchain' },
@@ -233,7 +233,7 @@ export const topicMaps: TopicMap[] = [
       '从 C/C++ 到脚本语言，再到 Go/Rust/TypeScript，梳理主流语言的血缘与影响关系。',
     groups: ['系统级', 'JVM/企业', '脚本动态', '现代静态', '前端/Web'],
     nodes: [
-      { id: 'c', name: 'C', year: 1972, group: '系统级', desc: '系统编程之母' },
+      { id: 'c', name: 'C', year: 1972, group: '系统级', desc: '系统编程之母', projectId: 'c' },
       { id: 'cpp', name: 'C++', year: 1985, group: '系统级', desc: 'C 的面向对象扩展', projectId: 'cpp' },
       { id: 'python', name: 'Python', year: 1991, group: '脚本动态', desc: 'AI 时代第一语言', projectId: 'python' },
       { id: 'java', name: 'Java', year: 1995, group: 'JVM/企业', desc: '企业级跨平台', projectId: 'java' },
