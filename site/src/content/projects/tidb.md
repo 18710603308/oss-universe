@@ -4,6 +4,7 @@ tagline: 国产分布式 NewSQL 数据库，兼容 MySQL 又能水平扩展
 category: 数据库
 language: Go/Rust
 born: 2015
+era: DevOps
 stars: 37k+
 depth: seed
 repo: https://github.com/pingcap/tidb

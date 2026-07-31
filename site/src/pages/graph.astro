@@ -2,29 +2,20 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// 从项目卡片自动派生图谱节点数据
 const projects = await getCollection('projects');
+const depthValue = { seed: 20, sprout: 32, tree: 50, peak: 66 };
 
-const depthValue = { seed: 20, sprout: 35, tree: 55, peak: 70 };
-
-// 节点：每个项目 + 每个领域（category）
+// ========== 视图一：总览图（项目 ↔ 领域） ==========
 const categories = [...new Set(projects.map((p) => p.data.category))];
-
-// ECharts categories（用于图例与配色）
-const chartCategories = categories.map((c) => ({ name: c }));
-
-const nodes = [
-  // 领域中心节点
+const overviewNodes = [
   ...categories.map((c) => ({
     id: `cat:${c}`,
     name: c,
-    symbolSize: 60,
+    symbolSize: 58,
     category: c,
     value: '领域',
-    itemStyle: { borderColor: '#fff', borderWidth: 2 },
     label: { fontWeight: 'bold' as const, fontSize: 14 },
   })),
-  // 项目节点
   ...projects.map((p) => ({
     id: p.id,
     name: p.data.name,
@@ -34,49 +25,122 @@ const nodes = [
     url: `/projects/${p.id}`,
   })),
 ];
-
-// 边：项目 → 所属领域
-const links = projects.map((p) => ({
+const overviewLinks = projects.map((p) => ({
   source: p.id,
   target: `cat:${p.data.category}`,
 }));
 
-const graphData = { nodes, links, categories: chartCategories };
-const graphJson = JSON.stringify(graphData);
+// ========== 视图二：技术演进图（时代 → 项目，按诞生年排序） ==========
+const eraOrder = ['Web2.0', '云计算', 'DevOps', '云原生', 'AI原生'];
+const eraProjects = projects.filter((p) => p.data.era);
+const evoNodes = [
+  ...eraOrder.map((e) => ({
+    id: `era:${e}`,
+    name: e,
+    symbolSize: 62,
+    category: e,
+    value: '技术时代',
+    label: { fontWeight: 'bold' as const, fontSize: 15 },
+  })),
+  ...eraProjects.map((p) => ({
+    id: p.id,
+    name: p.data.name,
+    symbolSize: depthValue[p.data.depth],
+    category: p.data.era as string,
+    value: `${p.data.name} · ${p.data.born ?? ''} · ${p.data.category}`,
+    url: `/projects/${p.id}`,
+  })),
+];
+const evoLinks = eraProjects.map((p) => ({
+  source: `era:${p.data.era}`,
+  target: p.id,
+}));
+const evoCategories = eraOrder.map((e) => ({ name: e }));
 
-// 统计信息
-const stats = {
-  projectCount: projects.length,
-  categoryCount: categories.length,
+// ========== 视图三：基金会归属图（基金会 → 项目） ==========
+const withFoundation = projects.filter((p) => p.data.foundation);
+const foundationNames = [
+  ...new Set(withFoundation.map((p) => p.data.foundation as string)),
+];
+const fdNodes = [
+  ...foundationNames.map((f) => ({
+    id: `fd:${f}`,
+    name: f,
+    symbolSize: 56,
+    category: f,
+    value: '基金会 / 归属',
+    label: { fontWeight: 'bold' as const, fontSize: 14 },
+  })),
+  ...withFoundation.map((p) => ({
+    id: p.id,
+    name: p.data.name,
+    symbolSize: depthValue[p.data.depth],
+    category: p.data.foundation as string,
+    value: `${p.data.name} · ${p.data.category}`,
+    url: `/projects/${p.id}`,
+  })),
+];
+const fdLinks = withFoundation.map((p) => ({
+  source: `fd:${p.data.foundation}`,
+  target: p.id,
+}));
+const fdCategories = foundationNames.map((f) => ({ name: f }));
+
+const views = {
+  overview: {
+    nodes: overviewNodes,
+    links: overviewLinks,
+    categories: categories.map((c) => ({ name: c })),
+  },
+  evolution: { nodes: evoNodes, links: evoLinks, categories: evoCategories },
+  foundation: { nodes: fdNodes, links: fdLinks, categories: fdCategories },
 };
+const viewsJson = JSON.stringify(views);
 ---
 
 <BaseLayout title="生态图谱 · 开源宇宙">
   <header class="mb-6">
     <h1 class="text-3xl font-bold text-white">🗺️ 开源生态图谱</h1>
     <p class="mt-2 text-oss-muted">
-      共 {stats.projectCount} 个项目、{stats.categoryCount} 个领域的关系网络。节点大小代表学习深度，颜色代表领域。
-      拖拽可交互，点击项目节点跳转到卡片详情。
+      三种视角看开源生态：按领域聚类、按技术时代演进、按基金会归属。
+      数据全部由 {projects.length} 张项目卡片自动生成。
     </p>
   </header>
 
-  <!-- 图例说明 -->
-  <div class="mb-4 flex flex-wrap gap-4 text-xs text-oss-muted">
-    <span>🔵 节点大小 = 学习深度（越大越深入）</span>
-    <span>🎨 颜色 = 所属领域</span>
-    <span>🖱️ 可拖拽 / 缩放 / 点击跳转</span>
+  <!-- 视图切换 -->
+  <div class="mb-4 flex flex-wrap gap-2" role="tablist">
+    <button
+      data-view="overview"
+      class="view-btn rounded-lg border border-oss-primary bg-oss-primary/10 px-4 py-2 text-sm font-medium text-oss-primary"
+      >🌐 领域总览</button
+    >
+    <button
+      data-view="evolution"
+      class="view-btn rounded-lg border border-oss-border px-4 py-2 text-sm text-oss-muted hover:border-oss-primary"
+      >⏳ 技术演进</button
+    >
+    <button
+      data-view="foundation"
+      class="view-btn rounded-lg border border-oss-border px-4 py-2 text-sm text-oss-muted hover:border-oss-primary"
+      >🏛️ 基金会归属</button
+    >
   </div>
+
+  <!-- 视图说明 -->
+  <p id="view-desc" class="mb-4 text-xs text-oss-muted">
+    🌐 <b>领域总览</b>：项目按技术领域聚类，节点大小 = 学习深度，点击项目节点跳转卡片。
+  </p>
 
   <div
     id="graph"
     class="w-full rounded-xl border border-oss-border bg-oss-surface"
     style="height: 640px;"
-    data-graph={graphJson}
+    data-views={viewsJson}
   >
   </div>
 
   <p class="mt-4 text-center text-sm text-oss-muted">
-    图谱数据由项目卡片自动生成 — 每新增一张卡片，图谱自动更新。
+    可拖拽 / 缩放 / 点击节点跳转 · 每新增一张卡片，三个视图都会自动更新。
   </p>
 </BaseLayout>
 
@@ -85,64 +149,100 @@ const stats = {
 
   const el = document.getElementById('graph');
   if (el) {
-    const data = JSON.parse(el.dataset.graph || '{}');
+    const views = JSON.parse(el.dataset.views || '{}');
     const chart = echarts.init(el, 'dark');
 
-    chart.setOption({
-      backgroundColor: 'transparent',
-      tooltip: {
-        formatter: (params: any) => {
-          if (params.dataType === 'node') {
-            return `<b>${params.data.name}</b><br/>${params.data.value ?? ''}`;
-          }
-          return '';
-        },
-      },
-      legend: [
-        {
-          data: data.categories.map((c: any) => c.name),
-          textStyle: { color: '#8b949e' },
-          top: 8,
-          type: 'scroll',
-        },
-      ],
-      series: [
-        {
-          type: 'graph',
-          layout: 'force',
-          roam: true,
-          draggable: true,
-          data: data.nodes,
-          links: data.links,
-          categories: data.categories,
-          force: {
-            repulsion: 320,
-            edgeLength: 90,
-            gravity: 0.08,
-          },
-          label: {
-            show: true,
-            position: 'right',
-            color: '#e6edf3',
-            fontSize: 12,
-          },
-          lineStyle: { color: 'source', curveness: 0.1, opacity: 0.5 },
-          emphasis: {
-            focus: 'adjacency',
-            lineStyle: { width: 3 },
-          },
-        },
-      ],
-    });
+    const descMap: Record<string, string> = {
+      overview:
+        '🌐 <b>领域总览</b>：项目按技术领域聚类，节点大小 = 学习深度，点击项目节点跳转卡片。',
+      evolution:
+        '⏳ <b>技术演进</b>：项目按所处技术时代分组（Web2.0 → 云计算 → DevOps → 云原生 → AI原生），呈现开源浪潮的更替。',
+      foundation:
+        '🏛️ <b>基金会归属</b>：项目按所属基金会/组织聚类，展现开源治理的组织格局。',
+    };
 
-    // 点击项目节点跳转
+    function renderView(view: string) {
+      const data = views[view];
+      if (!data) return;
+      chart.setOption(
+        {
+          backgroundColor: 'transparent',
+          tooltip: {
+            formatter: (params: any) =>
+              params.dataType === 'node'
+                ? `<b>${params.data.name}</b><br/>${params.data.value ?? ''}`
+                : '',
+          },
+          legend: [
+            {
+              data: data.categories.map((c: any) => c.name),
+              textStyle: { color: '#8b949e' },
+              top: 8,
+              type: 'scroll',
+            },
+          ],
+          series: [
+            {
+              type: 'graph',
+              layout: 'force',
+              roam: true,
+              draggable: true,
+              data: data.nodes,
+              links: data.links,
+              categories: data.categories,
+              force: { repulsion: 300, edgeLength: 88, gravity: 0.09 },
+              label: {
+                show: true,
+                position: 'right',
+                color: '#e6edf3',
+                fontSize: 12,
+              },
+              lineStyle: { color: 'source', curveness: 0.12, opacity: 0.5 },
+              emphasis: { focus: 'adjacency', lineStyle: { width: 3 } },
+            },
+          ],
+        },
+        true
+      );
+
+      const desc = document.getElementById('view-desc');
+      if (desc) desc.innerHTML = descMap[view];
+    }
+
+    // 初始视图
+    renderView('overview');
+
+    // 点击节点跳转
     chart.on('click', (params: any) => {
       if (params.dataType === 'node' && params.data.url) {
         window.location.href = params.data.url;
       }
     });
 
-    // 响应式
+    // 视图切换按钮
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.view-btn');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        buttons.forEach((b) => {
+          b.classList.remove(
+            'border-oss-primary',
+            'bg-oss-primary/10',
+            'text-oss-primary',
+            'font-medium'
+          );
+          b.classList.add('border-oss-border', 'text-oss-muted');
+        });
+        btn.classList.add(
+          'border-oss-primary',
+          'bg-oss-primary/10',
+          'text-oss-primary',
+          'font-medium'
+        );
+        btn.classList.remove('border-oss-border', 'text-oss-muted');
+        renderView(btn.dataset.view || 'overview');
+      });
+    });
+
     window.addEventListener('resize', () => chart.resize());
   }
 </script>

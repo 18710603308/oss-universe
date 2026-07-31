@@ -4,6 +4,7 @@ tagline: Google 开源的工业级深度学习框架，开启 AI 开源浪潮
 category: AI/ML
 language: Python/C++
 born: 2015
+era: AI原生
 stars: 185k+
 depth: sprout
 repo: https://github.com/tensorflow/tensorflow

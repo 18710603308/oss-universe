@@ -5,6 +5,7 @@ category: AI/ML
 foundation: Linux 基金会
 language: Python/C++
 born: 2016
+era: AI原生
 stars: 84k+
 depth: tree
 repo: https://github.com/pytorch/pytorch

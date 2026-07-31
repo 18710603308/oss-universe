@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { topicMaps } from '../../data/topicmaps';
+---
+
+<BaseLayout title="专题图谱 · 开源宇宙">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-white">📊 专题图谱</h1>
+    <p class="mt-2 text-oss-muted">
+      按领域细分的策展式技术谱系图，用「启发 / 取代 / 衍生 / 竞争」等关系，
+      呈现一个领域内项目的血缘与演进。目标 12 张，当前 {topicMaps.length} 张。
+    </p>
+  </header>
+
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      topicMaps.map((m) => (
+        <a
+          href={`/maps/${m.slug}`}
+          class="group flex flex-col rounded-xl border border-oss-border bg-oss-surface p-5 transition-all hover:border-oss-primary hover:shadow-lg hover:shadow-oss-primary/10"
+        >
+          <div class="text-3xl">{m.icon}</div>
+          <h2 class="mt-3 text-lg font-bold text-white group-hover:text-oss-primary">
+            {m.title}
+          </h2>
+          <p class="mt-1.5 flex-1 text-sm text-oss-muted">{m.summary}</p>
+          <div class="mt-3 flex items-center gap-3 text-xs text-oss-muted">
+            <span>🔗 {m.nodes.length} 个节点</span>
+            <span>➡️ {m.links.length} 条关系</span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

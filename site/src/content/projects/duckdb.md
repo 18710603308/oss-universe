@@ -4,6 +4,7 @@ tagline: 嵌入式分析数据库，"数据分析界的 SQLite"
 category: 数据库
 language: C++
 born: 2019
+era: 云原生
 stars: 24k+
 depth: seed
 repo: https://github.com/duckdb/duckdb

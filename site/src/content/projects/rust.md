@@ -5,6 +5,7 @@ category: 编程语言
 foundation: Rust 基金会
 language: Rust
 born: 2010
+era: 云原生
 stars: 98k+
 depth: seed
 repo: https://github.com/rust-lang/rust

@@ -4,6 +4,7 @@ tagline: 内存数据结构存储，最流行的缓存与高速数据库
 category: 数据库
 language: C
 born: 2009
+era: Web2.0
 stars: 67k+
 depth: sprout
 repo: https://github.com/redis/redis

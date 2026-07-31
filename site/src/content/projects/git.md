@@ -4,6 +4,7 @@ tagline: 分布式版本控制系统，现代软件协作的基石
 category: 开发工具
 language: C
 born: 2005
+era: 云计算
 stars: 52k+
 depth: tree
 repo: https://github.com/git/git

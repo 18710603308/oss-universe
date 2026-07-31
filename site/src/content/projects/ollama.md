@@ -4,6 +4,7 @@ tagline: 一行命令在本地运行大语言模型
 category: AI/ML
 language: Go
 born: 2023
+era: AI原生
 stars: 100k+
 depth: sprout
 repo: https://github.com/ollama/ollama

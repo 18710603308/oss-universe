@@ -5,6 +5,7 @@ category: 运行时
 foundation: OpenJS
 language: C++/JavaScript
 born: 2009
+era: Web2.0
 stars: 107k+
 depth: sprout
 repo: https://github.com/nodejs/node

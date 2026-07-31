@@ -5,6 +5,7 @@ category: 云原生
 foundation: CNCF
 language: Go
 born: 2014
+era: 云原生
 stars: 110k+
 depth: tree
 repo: https://github.com/kubernetes/kubernetes

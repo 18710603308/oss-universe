@@ -5,6 +5,7 @@ category: 编程语言
 foundation: Google
 language: Go
 born: 2009
+era: 云计算
 stars: 125k+
 depth: tree
 repo: https://github.com/golang/go

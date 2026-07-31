@@ -4,6 +4,7 @@ tagline: Hugging Face 的模型库，让 NLP/LLM 触手可及
 category: AI/ML
 language: Python
 born: 2018
+era: AI原生
 stars: 135k+
 depth: tree
 repo: https://github.com/huggingface/transformers

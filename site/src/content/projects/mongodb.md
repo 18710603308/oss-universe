@@ -4,6 +4,7 @@ tagline: 最流行的文档型 NoSQL 数据库
 category: 数据库
 language: C++
 born: 2009
+era: Web2.0
 stars: 27k+
 depth: seed
 repo: https://github.com/mongodb/mongo

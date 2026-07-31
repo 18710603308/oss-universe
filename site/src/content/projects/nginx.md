@@ -4,6 +4,7 @@ tagline: 高性能 Web 服务器与反向代理，支撑全球海量网站
 category: Web服务器
 language: C
 born: 2004
+era: Web2.0
 stars: 26k+
 depth: seed
 repo: https://github.com/nginx/nginx

@@ -5,6 +5,7 @@ category: 前端框架
 foundation: Meta（独立）
 language: JavaScript
 born: 2013
+era: 云计算
 stars: 230k+
 depth: sprout
 repo: https://github.com/facebook/react

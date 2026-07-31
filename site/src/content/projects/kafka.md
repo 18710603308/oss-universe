@@ -5,6 +5,7 @@ category: 消息与流处理
 foundation: Apache
 language: Java/Scala
 born: 2011
+era: 云计算
 stars: 28k+
 depth: tree
 repo: https://github.com/apache/kafka

@@ -4,6 +4,7 @@ tagline: LLM 应用开发框架，串联模型、数据与工具
 category: AI/ML
 language: Python
 born: 2022
+era: AI原生
 stars: 95k+
 depth: seed
 repo: https://github.com/langchain-ai/langchain

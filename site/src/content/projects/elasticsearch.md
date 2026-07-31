@@ -4,6 +4,7 @@ tagline: 分布式搜索与分析引擎，日志与全文检索的标杆
 category: 数据库
 language: Java
 born: 2010
+era: 云计算
 stars: 70k+
 depth: seed
 repo: https://github.com/elastic/elasticsearch

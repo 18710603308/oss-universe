@@ -11,6 +11,10 @@ const projects = defineCollection({
     category: z.string(), // 领域分类
     language: z.string().optional(), // 主要编程语言
     born: z.number().optional(), // 诞生年份
+    // 技术时代（用于演进图谱分组）：Web2.0 / 云计算 / DevOps / 云原生 / AI原生
+    era: z
+      .enum(['Web2.0', '云计算', 'DevOps', '云原生', 'AI原生'])
+      .optional(),
     stars: z.string().optional(), // Star 数（近似）
     // 学习深度：seed 了解 / sprout 上手 / tree 深研 / peak 贡献过
     depth: z.enum(['seed', 'sprout', 'tree', 'peak']).default('seed'),

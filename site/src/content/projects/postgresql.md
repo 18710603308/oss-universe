@@ -4,6 +4,7 @@ tagline: 世界上最先进的开源关系型数据库
 category: 数据库
 language: C
 born: 1996
+era: Web2.0
 stars: 16k+
 depth: seed
 repo: https://github.com/postgres/postgres

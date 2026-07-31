@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { topicMaps } from '../../data/topicmaps';
+
+export function getStaticPaths() {
+  return topicMaps.map((m) => ({
+    params: { slug: m.slug },
+    props: { map: m },
+  }));
+}
+
+const { map } = Astro.props;
+
+// 计算时间轴谱系布局：x 按年份归一化，y 按分组泳道分布
+const years = map.nodes.map((n) => n.year);
+const minYear = Math.min(...years);
+const maxYear = Math.max(...years);
+const span = Math.max(maxYear - minYear, 1);
+
+// 每个分组一条泳道（加大间距以避免重叠）
+const laneOf: Record<string, number> = {};
+map.groups.forEach((g, i) => (laneOf[g] = i));
+const LANE_SPACING = 95; // 泳道（分组）间距
+const SUBROW_SPACING = 30; // 组内子行间距
+const SUBROWS = 3; // 每组分 3 个子行错开
+const X_SCALE = 200; // 横轴（时间）展开尺度
+
+// 组内按年份排序后逐个分配到 3 个子行，避免同行拥挤
+const groupCount: Record<string, number> = {};
+const echartsNodes = map.nodes
+  .slice()
+  .sort((a, b) => a.year - b.year)
+  .map((n) => {
+    const idx = groupCount[n.group] ?? 0;
+    groupCount[n.group] = idx + 1;
+    const x = ((n.year - minYear) / span) * X_SCALE;
+    const subRow = idx % SUBROWS;
+    const y = laneOf[n.group] * LANE_SPACING + subRow * SUBROW_SPACING;
+    return {
+      id: n.id,
+      name: `${n.name}`,
+      x,
+      y: -y, // 顶部为第一个分组
+      value: `${n.year} · ${n.desc ?? ''}`,
+      category: n.group,
+      symbolSize: n.projectId ? 38 : 26,
+      url: n.projectId ? `/projects/${n.projectId}` : undefined,
+      itemStyle: n.projectId ? { borderColor: '#58a6ff', borderWidth: 2 } : {},
+    };
+  });
+
+const relationColor: Record<string, string> = {
+  启发: '#3fb950',
+  取代: '#f85149',
+  衍生: '#58a6ff',
+  竞争: '#d29922',
+  演进: '#a371f7',
+  基于: '#8b949e',
+};
+
+const echartsLinks = map.links.map((l) => ({
+  source: l.source,
+  target: l.target,
+  label: { show: true, formatter: l.relation, fontSize: 10, color: '#c9d1d9' },
+  lineStyle: { color: relationColor[l.relation] || '#8b949e', width: 1.6, curveness: 0.15 },
+}));
+
+const chartData = {
+  nodes: echartsNodes,
+  links: echartsLinks,
+  categories: map.groups.map((g) => ({ name: g })),
+};
+const chartJson = JSON.stringify(chartData);
+const legendItems = Object.entries(relationColor);
+---
+
+<BaseLayout title={`${map.title} · 专题图谱`} description={map.summary}>
+  <a href="/maps" class="text-sm text-oss-primary hover:underline">← 返回专题图谱</a>
+
+  <header class="mt-4 mb-4">
+    <h1 class="text-3xl font-bold text-white">{map.icon} {map.title}</h1>
+    <p class="mt-2 text-oss-muted">{map.summary}</p>
+  </header>
+
+  <!-- 关系图例 -->
+  <div class="mb-2 flex flex-wrap gap-3 text-xs">
+    {
+      legendItems.map(([rel, color]) => (
+        <span class="flex items-center gap-1">
+          <span
+            class="inline-block h-2 w-4 rounded"
+            style={`background:${color}`}
+          />
+          <span class="text-oss-muted">{rel}</span>
+        </span>
+      ))
+    }
+    <span class="text-oss-muted">· 蓝边节点可点击进入卡片 · 横轴 ≈ 时间</span>
+  </div>
+
+  <div
+    id="topicgraph"
+    class="w-full rounded-xl border border-oss-border bg-oss-surface"
+    style="height: 600px;"
+    data-graph={chartJson}
+  >
+  </div>
+
+  <p class="mt-4 text-center text-sm text-oss-muted">
+    横轴大致对应时间（{minYear} → {maxYear}），纵向按技术分组泳道排列。
+  </p>
+</BaseLayout>
+
+<script>
+  import * as echarts from 'echarts';
+
+  const el = document.getElementById('topicgraph');
+  if (el) {
+    const data = JSON.parse(el.dataset.graph || '{}');
+    const chart = echarts.init(el, 'dark');
+
+    chart.setOption({
+      backgroundColor: 'transparent',
+      tooltip: {
+        formatter: (p: any) =>
+          p.dataType === 'node'
+            ? `<b>${p.data.name}</b><br/>${p.data.value ?? ''}`
+            : '',
+      },
+      legend: [
+        {
+          data: data.categories.map((c: any) => c.name),
+          textStyle: { color: '#8b949e' },
+          bottom: 4,
+          type: 'scroll',
+        },
+      ],
+      series: [
+        {
+          type: 'graph',
+          layout: 'none', // 用我们计算的 x/y 坐标（时间轴谱系）
+          roam: true,
+          data: data.nodes,
+          links: data.links,
+          categories: data.categories,
+          edgeSymbol: ['none', 'arrow'],
+          edgeSymbolSize: 8,
+          label: { show: true, position: 'bottom', color: '#e6edf3', fontSize: 11 },
+          labelLayout: { hideOverlap: true },
+          emphasis: { focus: 'adjacency', lineStyle: { width: 3 } },
+        },
+      ],
+    });
+
+    chart.on('click', (p: any) => {
+      if (p.dataType === 'node' && p.data.url) {
+        window.location.href = p.data.url;
+      }
+    });
+
+    window.addEventListener('resize', () => chart.resize());
+  }
+</script>

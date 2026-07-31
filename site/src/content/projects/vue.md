@@ -5,6 +5,7 @@ category: 前端框架
 foundation: 独立
 language: TypeScript
 born: 2014
+era: 云计算
 stars: 210k+
 depth: sprout
 repo: https://github.com/vuejs/core
